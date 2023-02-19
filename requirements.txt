@@ -1,0 +1,2 @@
+pyTelegramBotAPI==4.10.0
+TBForms==0.9.11
