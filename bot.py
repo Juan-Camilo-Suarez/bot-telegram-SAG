@@ -1,9 +1,23 @@
+import time
+
 import telebot
 import requests
 
 bot = telebot.TeleBot('6019664836:AAECDCjHOmW4TpZccuXJtpwHQ3rlHBYL5_4')
 
 print('Bot is running...')
+
+url = "https://b24-iu5stq.bitrix24.site/backend_test/"
+
+while True:
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            print("Website is up!")
+    except:
+        print("Website is down!")
+
+    time.sleep(600)
 
 
 @bot.message_handler(commands=['start', 'hello'])
