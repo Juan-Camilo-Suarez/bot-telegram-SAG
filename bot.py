@@ -1,7 +1,6 @@
-import time
-
 import telebot
 import requests
+import datetime
 
 bot = telebot.TeleBot('6019664836:AAECDCjHOmW4TpZccuXJtpwHQ3rlHBYL5_4')
 
@@ -9,20 +8,21 @@ print('Bot is running...')
 
 url = "https://b24-iu5stq.bitrix24.site/backend_test/"
 
-while True:
-    try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            print("Website is up!")
-    except:
-        print("Website is down!")
 
-    time.sleep(600)
+# while True:
+#     try:
+#         response = requests.get(url)
+#         if response.status_code == 200:
+#             print("Website is up!")
+#     except:
+#         print("Website is down!")
+#
+#     time.sleep(600)
 
 
 @bot.message_handler(commands=['start', 'hello'])
 def send_welcome(message):
-    bot.reply_to(message, "Howdy, how are you doing?")
+    bot.reply_to(message, "how are you doing?")
 
 
 def get_information(name: str, lastname: str, email: str, phone: str, birth_date: str) -> dict:
@@ -91,6 +91,19 @@ def name_handler(message):
     text = "What is your name?"
     sent_msg = bot.send_message(message.chat.id, text, parse_mode="Markdown")
     bot.register_next_step_handler(sent_msg, lastname_handler)
+
+
+@bot.message_handler(content_types=['photo', 'audio'])
+def handle_docs_photo(message):
+    raw = message.photo[0].file_id
+    now = datetime.datetime.now()
+    date_time = now.strftime("%Y%m-%d-%H:%M")
+    path = str(date_time) + str(message.from_user.id) + ".jpg"
+    file_info = bot.get_file(raw)
+    downloaded_file = bot.download_file(file_info.file_path)
+    with open("media/" + path, 'wb') as new_file:
+        new_file.write(downloaded_file)
+        bot.reply_to(message, "Images Was Saved Sir")
 
 
 bot.infinity_polling()
