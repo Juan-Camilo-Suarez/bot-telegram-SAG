@@ -1,3 +1,6 @@
+import threading
+import time
+
 import telebot
 import requests
 import datetime
@@ -9,15 +12,21 @@ print('Bot is running...')
 url = "https://b24-iu5stq.bitrix24.site/backend_test/"
 
 
-# while True:
-#     try:
-#         response = requests.get(url)
-#         if response.status_code == 200:
-#             print("Website is up!")
-#     except:
-#         print("Website is down!")
-#
-#     time.sleep(600)
+def check_website(url):
+    while True:
+        try:
+            response = requests.get(url)
+            if response.status_code == 200:
+                print("Website is up!")
+        except:
+            print("Website is down!")
+
+        time.sleep(600)
+
+
+# Crea un hilo para ejecutar la función de monitoreo del sitio web
+website_thread = threading.Thread(target=check_website, args=(url,))
+website_thread.start()
 
 
 @bot.message_handler(commands=['start', 'hello'])
