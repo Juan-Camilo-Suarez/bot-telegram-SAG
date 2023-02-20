@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - app_network
+
+  bot:
+    build:
+      context: .
+      dockerfile: Deploy/Dockerfile
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+    networks:
+      - app_network
+
+volumes:
+  redis_data:
+
+networks:
+  app_network:
