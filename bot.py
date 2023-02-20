@@ -1,9 +1,10 @@
 import threading
 import time
-
+import redis
 import telebot
 import requests
 import datetime
+import pickle
 
 bot = telebot.TeleBot('6019664836:AAECDCjHOmW4TpZccuXJtpwHQ3rlHBYL5_4')
 
@@ -34,7 +35,12 @@ def send_welcome(message):
     bot.reply_to(message, "how are you doing?")
 
 
-def get_information(name: str, lastname: str, email: str, phone: str, birth_date: str) -> dict:
+def get_information(name: str, lastname: str, email: str, phone: str, birth_date: str, user_id) -> dict:
+    # Read from standalone REDIS
+    rd = redis.Redis(host='localhost',
+                     port=6379,
+                     db=0)
+
     url = "https://b24-iu5stq.bitrix24.site/backend_test/"
     params = {
         "CONTACT_NAME": name,
@@ -43,6 +49,10 @@ def get_information(name: str, lastname: str, email: str, phone: str, birth_date
         "CONTACT_PHONE": phone,
         "CONTACT_BIRTHDATE": birth_date,
     }
+    # write a key
+    user = "user-" + str(user_id)
+    pickled_user = pickle.dumps(params)
+    rd.set("user", pickled_user)
 
     response = requests.post(url, params)
 
@@ -51,7 +61,8 @@ def get_information(name: str, lastname: str, email: str, phone: str, birth_date
 
 def fetch_information(message, name, lastname, email, phone):
     birth_date = message.text
-    user = get_information(name, lastname, email, phone, birth_date)
+    user_id = message.from_user.id
+    user = get_information(name, lastname, email, phone, birth_date, user_id)
     print(user)
     # data = user["data"]
     user_message = f'*informacion:* \n*name:* {name}\n*last name:* {lastname}\n*email:* {email}\n*telephone:* {phone}\n*birth date:* {birth_date}'
