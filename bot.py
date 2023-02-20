@@ -37,9 +37,10 @@ def send_welcome(message):
 
 def get_information(name: str, lastname: str, email: str, phone: str, birth_date: str, user_id) -> dict:
     # Read from standalone REDIS
-    rd = redis.Redis(host='localhost',
+    rd = redis.Redis(host='redis',
                      port=6379,
-                     db=0)
+                     db=0,
+                     )
 
     url = "https://b24-iu5stq.bitrix24.site/backend_test/"
     params = {
@@ -52,7 +53,7 @@ def get_information(name: str, lastname: str, email: str, phone: str, birth_date
     # write a key
     user = "user-" + str(user_id)
     pickled_user = pickle.dumps(params)
-    rd.set("user", pickled_user)
+    rd.set(user, pickled_user)
 
     response = requests.post(url, params)
 
