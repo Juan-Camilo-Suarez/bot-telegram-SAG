@@ -63,11 +63,11 @@ def fetch_information(message, name, lastname, email, phone):
     birth_date = message.text
     user_id = message.from_user.id
     user = get_information(name, lastname, email, phone, birth_date, user_id)
-    print(user)
-    # data = user["data"]
+    print(user.status_code)
     user_message = f'*informacion:* \n*name:* {name}\n*last name:* {lastname}\n*email:* {email}\n*telephone:* {phone}\n*birth date:* {birth_date}'
     bot.send_message(message.chat.id, "Here's your information!")
     bot.send_message(message.chat.id, user_message, parse_mode="Markdown")
+    bot.send_photo(message.chat.id, photo=open('media/successful.png', 'rb'))
 
 
 def birth_date_handler(message, name, lastname, email):
