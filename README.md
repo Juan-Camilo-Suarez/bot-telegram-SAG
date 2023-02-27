@@ -12,4 +12,4 @@
 4. Установить BD:\
    ``` docker-compose up -d  ```
 5. Запустить развертывание:\
-   ``` docker-compose -f docker-compose.prod.ymll up -d  ```
+   ``` docker-compose -f docker-compose.prod.yml up -d  ```
